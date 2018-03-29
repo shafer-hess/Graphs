@@ -29,6 +29,17 @@ class Graph
 		// Part 3: Try to do a tour of all cities
 		void eulerianTour(int);  // NOTE : If necessary, you can change the parameters to this function.
 
+
+		//MISC Functions
+		void setNumCities(int num);
+		void setNumRoutes(int num);
+		void setWeight(int num);
+
+		int getNumCities();
+		int getNumRoutes();
+		double getWeight();
+ 
+
 };
 
 #endif
