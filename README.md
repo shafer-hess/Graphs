@@ -1,4 +1,4 @@
 # Graphs
 
-#WORK IN PROGRESS REPO
+# WORK IN PROGRESS REPO
 Tour Guide System project for CS250. Uses Graph Implementation and uses Dijkstra's Algorithm to compute shortest distance.
