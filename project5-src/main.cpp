@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include "graph.h"
+#include <vector>
+#include <algorithm>
 #include "Edge.h"
 #include "Vertex.h"
  
@@ -9,12 +11,29 @@ using namespace std;
 
  // Part 1 : Find the connected components and the bridge
 void part1() {
-	Vertex * v1 = new Vertex("A");
-	Vertex * v2 = new Vertex("B");
-	Edge * e1 = new Edge(v1,v2,12.5);
+	int numCities;
+	int numRoutes;
+	cin >> numCities;
+	//cout << numCities << endl;
+	cin >> numRoutes;
+	//cout << numRoutes << endl;
+	//cout << endl;
 
-	cout << e1->getV1()->getName() << " " << e1->getV2()->getName() << " " << e1->getWeight() << endl;
+	Graph *  g = new Graph(numCities, numRoutes);
 
+	for(int i = 0; i < numRoutes; i++) {
+		string c1;
+		string c2;					
+		double weight;
+		
+		cin >> c1;
+		cin >> c2;
+		cin >> weight;
+		g->addRoute(c1, c2, weight);
+
+	}
+
+	g->analyseGraph();
 }
 
  // Part 2 :  Find a ticket using Dijkstra	

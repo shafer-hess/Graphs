@@ -9,7 +9,7 @@
 class Edge;
 class Vertex {
 	private:
-		std::vector<Edge> edgeList;
+		std::vector<Edge*> edgeList;
 		std::string name;
 
 	public:
