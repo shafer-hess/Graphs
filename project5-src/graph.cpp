@@ -30,6 +30,8 @@ Graph::Graph(int Vertices, int routes) {
 	disc = new int[Vertices];
 	evalFunc = new int[Vertices];
 	parent = new int[Vertices];
+	dist = new double[Vertices];
+	sptSet = new bool[Vertices];
 
 	for(int i = 0; i < Vertices; i++) {
 		cities[i] = "";
@@ -88,7 +90,7 @@ void Graph::traverse(int index) {
 	}
 }
 
-int  Graph::getConnected() {
+int Graph::getConnected() {
 
 	int connected = 0;
 	
@@ -152,6 +154,65 @@ void Graph::separationEdges() {
 
 bool Graph::isAdjacent(int i1, int i2) {
 	return (adjacent[i1][i2] != 0) ? true : false;
+}
+
+double  Graph::minimumDist() {
+	double  min = INFI;
+	double  minIndex = INFI;
+
+	for(int i = 0; i < numCities; i++) {
+		if(sptSet[i] == false && dist[i] <= min) {
+			min = dist[i];
+			minIndex = i;
+		}
+	}
+	
+	return minIndex;
+
+}
+
+void Graph::findCost(const string &source, const string &destination) {
+	int i;
+	for(i = 0; i < numCities; i++) {
+		if(cities[i] == source) {
+			break;		
+		}
+	}
+
+	dijkstra(i, 0);
+}
+
+void Graph::dijkstra(int src, int dest) {
+	//dist = new int[numCities];
+	//sptSet = new bool[numCities];
+
+	for(int i = 0; i < numCities; i++) {
+		dist[i] = INFI;
+		sptSet[i] = false;
+	}
+
+	dist[src] = 0;
+	
+	for(int i = 0; i < numCities - 1; i++) {
+		int d = minimumDist();
+		sptSet[d] = true;
+		
+		for(int i = 0; i < numCities; i++) {
+			if(!sptSet[i] && adjacent[d][i] && dist[d] != INFI && dist[d] + adjacent[d][i] < dist[i]) {
+				dist[i] = dist[d] + adjacent[d][i]; 
+			}
+		}
+	}
+	
+	printDistances();
+
+}
+
+void Graph::printDistances() {
+	cout << "Vertex    Distance from Source" << endl;		
+	for(int i = 0; i < numCities; i++) {
+		cout << cities[i] << "   " << dist[i] << endl; 
+	}
 }
 
 void Graph::setNumCities(int num) {

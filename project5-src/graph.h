@@ -10,8 +10,7 @@
 
 using namespace std;
 
-class Graph
-{
+class Graph {
 	private:
 		int numCities;
 		int numRoutes;
@@ -23,6 +22,9 @@ class Graph
 		int * evalFunc;
 		int * parent;
 		bool * visited;
+
+		double * dist;
+		bool * sptSet;
 		
 		vector<pair<string,string>> separations;
 	
@@ -48,7 +50,12 @@ class Graph
 		void setNumCities(int num);
 		void setNumRoutes(int num);
 		void setWeight(int num);
-
+	
+		int getNumCities();
+		int getNumRoutes();
+		double getWeight();
+		
+		//PART 1 HELPER FUNCTIONS
 		void separationHelper(int index);
 		void separationEdges();
 
@@ -57,10 +64,12 @@ class Graph
 	
 		void traverse(int index);
 		int getConnected();		//For free
-	
-		int getNumCities();
-		int getNumRoutes();
-		double getWeight();
+
+		//PART 2 HELPER FUNCTIONS
+		double minimumDist();
+		void dijkstra(int src, int dest);
+		void printDistances();
+		
 };
 
 #endif
