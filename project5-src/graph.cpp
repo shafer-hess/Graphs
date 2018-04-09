@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include "graph.h"
 
@@ -30,6 +31,8 @@ Graph::Graph(int Vertices, int routes) {
 	disc = new int[Vertices];
 	evalFunc = new int[Vertices];
 	parent = new int[Vertices];
+	dist = new double[Vertices];
+	sptSet = new bool[Vertices];
 
 	for(int i = 0; i < Vertices; i++) {
 		cities[i] = "";
@@ -88,7 +91,7 @@ void Graph::traverse(int index) {
 	}
 }
 
-int  Graph::getConnected() {
+int Graph::getConnected() {
 
 	int connected = 0;
 	
@@ -152,6 +155,81 @@ void Graph::separationEdges() {
 
 bool Graph::isAdjacent(int i1, int i2) {
 	return (adjacent[i1][i2] != 0) ? true : false;
+}
+
+double  Graph::minimumDist() {
+	double  min = INFI;
+	double  minIndex = INFI;
+
+	for(int i = 0; i < numCities; i++) {
+		if(sptSet[i] == false && dist[i] <= min) {
+			min = dist[i];
+			minIndex = i;
+		}
+	}
+	
+	return minIndex;
+
+}
+
+void Graph::findCost(const string &source, const string &destination) {
+	int src;
+	int dest;
+	for(int i = 0; i < numCities; i++) {
+		if(cities[i] == source) {
+			src = i;	
+		}
+		if(cities[i] == destination) {
+			dest = i;
+		}
+	}
+
+	dijkstra(src, dest);
+}
+
+void Graph::dijkstra(int src, int dest) {
+	for(int i = 0; i < numCities; i++) {
+		parent[i] = -1;			//PARENT ARRAY FOR INTERMEDIATE PATHS
+		dist[i] = INFI;
+		sptSet[i] = false;
+	}
+
+	dist[src] = 0;
+	
+	for(int i = 0; i < numCities - 1; i++) {
+		int d = minimumDist();
+		sptSet[d] = true;
+		
+		for(int i = 0; i < numCities; i++) {
+			if(!sptSet[i] && adjacent[d][i] && dist[d] != INFI && dist[d] + adjacent[d][i] < dist[i]) {
+				parent[i] = d;
+				dist[i] = dist[d] + adjacent[d][i];
+			}
+		}
+	}
+
+	cout << cities[src] << " ";	
+	printPaths(dest);
+	
+	cout << std::fixed;	
+	cout << std::setprecision(2);
+	cout << dist[dest] << endl;
+
+}
+
+void Graph::printDistances(int dest) {
+	cout << "Vertex    Distance from Source" << endl;		
+	for(int i = 0; i < numCities; i++) {
+		if(cities[dest] == cities[i]) {
+			cout << cities[i] << "   " << dist[i] << endl; 
+		}
+	}
+}
+
+void Graph::printPaths(int dest) {
+	if(parent[dest] == -1) { return; }
+	printPaths(parent[dest]);
+	cout << cities[dest] << " ";
 }
 
 void Graph::setNumCities(int num) {

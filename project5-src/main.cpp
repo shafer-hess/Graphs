@@ -14,11 +14,8 @@ void part1() {
 	int numCities;
 	int numRoutes;
 	cin >> numCities;
-	//cout << numCities << endl;
 	cin >> numRoutes;
-	//cout << numRoutes << endl;
-	//cout << endl;
-
+	
 	Graph *  g = new Graph(numCities, numRoutes);
 
 	for(int i = 0; i < numRoutes; i++) {
@@ -38,6 +35,37 @@ void part1() {
 
  // Part 2 :  Find a ticket using Dijkstra	
 void part2() {
+	int numCities;
+	int numRoutes;
+
+	cin >> numCities;
+	cin >> numRoutes;
+	
+	Graph * g = new Graph(numCities, numRoutes);
+	
+	for(int i = 0; i < numRoutes; i++) {
+		string c1;
+		string c2;
+		double weight;
+
+		cin >> c1;
+		cin >> c2;
+		cin >> weight;
+		g->addRoute(c1, c2, weight);
+	}
+
+	string src;
+	string dest;
+
+	while(true) {
+		cin >> src;
+		cin >> dest;
+		
+		if(src == "END") { break; }
+		g->findCost(src,dest);
+		//cout << src << " " << dest << endl;
+		//break;
+	}
 
 }
 
