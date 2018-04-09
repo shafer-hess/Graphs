@@ -64,7 +64,7 @@ void part2() {
 		if(src == "END") { break; }
 		g->findCost(src,dest);
 		//cout << src << " " << dest << endl;
-		break;
+		//break;
 	}
 
 }

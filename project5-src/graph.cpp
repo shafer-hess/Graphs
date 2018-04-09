@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include "graph.h"
 
@@ -172,21 +173,23 @@ double  Graph::minimumDist() {
 }
 
 void Graph::findCost(const string &source, const string &destination) {
-	int i;
-	for(i = 0; i < numCities; i++) {
+	int src;
+	int dest;
+	for(int i = 0; i < numCities; i++) {
 		if(cities[i] == source) {
-			break;		
+			src = i;	
+		}
+		if(cities[i] == destination) {
+			dest = i;
 		}
 	}
 
-	dijkstra(i, 0);
+	dijkstra(src, dest);
 }
 
 void Graph::dijkstra(int src, int dest) {
-	//dist = new int[numCities];
-	//sptSet = new bool[numCities];
-
 	for(int i = 0; i < numCities; i++) {
+		parent[i] = -1;			//PARENT ARRAY FOR INTERMEDIATE PATHS
 		dist[i] = INFI;
 		sptSet[i] = false;
 	}
@@ -199,20 +202,34 @@ void Graph::dijkstra(int src, int dest) {
 		
 		for(int i = 0; i < numCities; i++) {
 			if(!sptSet[i] && adjacent[d][i] && dist[d] != INFI && dist[d] + adjacent[d][i] < dist[i]) {
-				dist[i] = dist[d] + adjacent[d][i]; 
+				parent[i] = d;
+				dist[i] = dist[d] + adjacent[d][i];
 			}
 		}
 	}
+
+	cout << cities[src] << " ";	
+	printPaths(dest);
 	
-	printDistances();
+	cout << std::fixed;	
+	cout << std::setprecision(2);
+	cout << dist[dest] << endl;
 
 }
 
-void Graph::printDistances() {
+void Graph::printDistances(int dest) {
 	cout << "Vertex    Distance from Source" << endl;		
 	for(int i = 0; i < numCities; i++) {
-		cout << cities[i] << "   " << dist[i] << endl; 
+		if(cities[dest] == cities[i]) {
+			cout << cities[i] << "   " << dist[i] << endl; 
+		}
 	}
+}
+
+void Graph::printPaths(int dest) {
+	if(parent[dest] == -1) { return; }
+	printPaths(parent[dest]);
+	cout << cities[dest] << " ";
 }
 
 void Graph::setNumCities(int num) {
