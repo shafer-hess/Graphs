@@ -22,15 +22,22 @@ class Graph {
 
 		double * dist;				//Array that stores the distance from a vertex to all other vertices
 		bool * sptSet;				//Bool array that indicates if the vertex is in the spanning tree
-		
+
+		bool * mstSet;
+		int * key;		
+	
 		vector<pair<string,string>> separations; //Vector that stores all separation edges for output, traverse in reverse order for proper output
+
+		vector<string> adjList;			//Adjacency List vector for Euler Tour
+		vector<string> euler;			//Vector to store Euler Tour
 	
 	public:
 		int citiesAdded;			//Number of cities added
 		int connectedComponents;		//Connected components for output
 		int numSeparations;			//Number of separation edges
 
-		Graph(int, int); 
+		Graph(int, int);
+		~Graph(); 
 		// Create the graph
 		void addRoute(string, string, double);	//Adds route (sets adjacent in adjaceny matrix) given two vertices in the graph
 		
@@ -67,7 +74,12 @@ class Graph {
 		void dijkstra(int src, int dest);	//Dijkstra algorithm for finding shortest distance from source to all other points
 		void printDistances(int dest);		//prints the distance from source to destination
 		void printPaths(int dest);		//prints path from source, through intermediate nodes, to destination
-		
+
+		//PART 3 HELPER FUNCTIONS
+		void printMST();			//prints the minimum spanning tree
+		void createMST(int root);		//creates a minimum spanning tree using prim-jarnik algorithm
+		double minimumKey();			//find the minimum key
+		void eulerTour(int root);	
 };
 
 #endif
