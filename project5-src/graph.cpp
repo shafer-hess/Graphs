@@ -33,14 +33,29 @@ Graph::Graph(int Vertices, int routes) {
 	parent = new int[Vertices];
 	dist = new double[Vertices];
 	sptSet = new bool[Vertices];
+	mstSet = new bool[Vertices];
+	key = new int[Vertices];
 
 	for(int i = 0; i < Vertices; i++) {
 		cities[i] = "";
 		disc[i] = -1;
 		evalFunc[i] = -1;
-		parent[i] = -1;
+		//parent[i] = -1;
 		visited[i] = false;
 	} 
+}
+
+Graph::~Graph() {
+	delete [] cities;
+	delete [] visited;
+	delete [] disc;
+	delete [] evalFunc;
+	delete [] parent;
+	delete [] dist;
+	delete [] sptSet;
+	delete [] mstSet;
+	delete [] adjacent;
+	delete [] key;
 }
 
 int Graph::exists(string name) {
@@ -53,7 +68,6 @@ int Graph::exists(string name) {
 }
 
 void Graph::addRoute(string c1, string c2, double weight) {
-	
 	int cPos1 = exists(c1);
 	int cPos2 = exists(c2);
 	
@@ -136,7 +150,7 @@ void Graph::separationHelper(int index) {
 	}
 }
 
-bool strCompare(pair<string,string> s1, pair<string,string> s2) { return s1.first < s2.first; }
+bool strCompare(string s1, string s2) { return s1 < s2; }
 
 void Graph::separationEdges() {
 	for(int i = 0; i < numCities; i++) { visited[i] = false; }
@@ -157,7 +171,7 @@ bool Graph::isAdjacent(int i1, int i2) {
 	return (adjacent[i1][i2] != 0) ? true : false;
 }
 
-double  Graph::minimumDist() {
+double Graph::minimumDist() {
 	double  min = INFI;
 	double  minIndex = INFI;
 
@@ -168,6 +182,21 @@ double  Graph::minimumDist() {
 		}
 	}
 	
+	return minIndex;
+
+}
+
+double Graph::minimumKey() {
+	double min = INFI;
+	double minIndex = INFI;
+	
+	for(int i = 0; i < numCities; i++) {
+		if(mstSet[i] == false && key[i] < min) {
+			min = key[i];
+			minIndex = i;
+		}
+	}
+
 	return minIndex;
 
 }
@@ -208,14 +237,48 @@ void Graph::dijkstra(int src, int dest) {
 		}
 	}
 
-	cout << cities[src] << " ";	
-	printPaths(dest);
-	
-	cout << std::fixed;	
-	cout << std::setprecision(2);
-	cout << dist[dest] << endl;
+	int flag = 0;
+	for(int i = 0; i < numCities; i++) {
+		if(parent[i] != -1 && parent[i] != 0) { flag = 1; }
+	}
 
+	if(flag || (dist[src] == 0 && flag == 0 && dist[dest] != INFI)) {
+		cout << cities[src] << " ";	
+		printPaths(dest);
+	
+		cout << std::fixed;	
+		cout << std::setprecision(2);
+		cout << dist[dest] << endl;
+	}
+
+	else {
+		cout << "not possible" << endl;
+	}
 }
+
+void Graph::createMST(int root) {
+	for(int i = 0; i < numCities; i++) {
+		key[i] = INFI;
+		mstSet[i] = false;
+	}
+	
+	key[root] = 0;
+	parent[root] = -1;
+	
+	for(int i = 1; i < numCities-1; i++) {
+		int d = minimumKey();
+		mstSet[d] = true;
+		
+		for(int i = 0; i < numCities; i++) {
+			if(adjacent[d][i] && !mstSet[i] && (adjacent[d][i] < key[i])) {
+				parent[i] = d;
+				key[i] = adjacent[d][i];
+			}
+		}
+	
+	}	
+}
+
 
 void Graph::printDistances(int dest) {
 	cout << "Vertex    Distance from Source" << endl;		
@@ -230,6 +293,33 @@ void Graph::printPaths(int dest) {
 	if(parent[dest] == -1) { return; }
 	printPaths(parent[dest]);
 	cout << cities[dest] << " ";
+}
+
+void Graph::eulerTour(int root) {
+
+	vector<string> children;
+	cout << cities[root] << endl;
+	for(int i = 0; i < numCities; i++) {
+		if(parent[i] == root) {
+			children.push_back(cities[i]);
+		}
+	}
+	
+	sort(children.begin(), children.end(), strCompare);
+	for(int i = 0; i < children.size(); i++) {
+		int pos = exists(children[i]);
+		eulerTour(pos);
+	}
+
+}
+
+void Graph::printMST() {
+	cout << "Edge  Weight" << endl;
+	for(int i = 1; i < numCities; i++) {
+		cout << std::fixed;
+		cout << std::setprecision(2);
+		cout << parent[i] << " - " << i << "   " << adjacent[i][parent[i]] << endl;
+	}
 }
 
 void Graph::setNumCities(int num) {

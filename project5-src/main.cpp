@@ -63,16 +63,47 @@ void part2() {
 		
 		if(src == "END") { break; }
 		g->findCost(src,dest);
-		//cout << src << " " << dest << endl;
-		//break;
 	}
+
+	delete g;
 
 }
 
  // Part 3 :Try to do a tour of all cities 
 void part3() {
- 
+	int numCities;
+	int numRoutes;
+	
+	cin >> numCities;
+	cin >> numRoutes;
 
+	Graph * g = new Graph(numCities, numRoutes);
+
+	for(int i = 0; i < numRoutes; i++) {
+		string c1, c2;
+		double weight;
+
+		cin >> c1;
+		cin >> c2;
+		cin >> weight;
+		g->addRoute(c1,c2, weight);
+	}
+	
+	string root;
+	cin >> root;
+	
+	int rootPos = g->exists(root);
+	g->createMST(rootPos);
+	//g->printMST();
+	
+	int connected = g->getConnected();
+	if(connected == 1) {
+		g->eulerTour(rootPos);
+	}
+	
+	else {
+		cout << "not available" << endl;
+	}
 }
  
 int main() {
